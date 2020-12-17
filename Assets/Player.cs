@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 public class Player : MonoBehaviour
 {
-    [Tooltip("In ms^-1")][SerializeField] float xSpeed = 4f;
-    [Tooltip("In ms^-1")] [SerializeField] float xRange = 5f;
+    [Tooltip("In ms^-1")][SerializeField] float speed = 20f;
+    [Tooltip("In ms^-1")] [SerializeField] float xRange = 15f;
+    [Tooltip("In ms^-1")] [SerializeField] float yRange = 8f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -17,11 +19,17 @@ public class Player : MonoBehaviour
     void Update()
     {
         float xThrow = CrossPlatformInputManager.GetAxis("Horizontal");
-        float xOffset = xThrow * xSpeed * Time.deltaTime;
+        float yThrow = CrossPlatformInputManager.GetAxis("Vertical");
+
+        float xOffset = xThrow * speed * Time.deltaTime;
+        float yOffset = yThrow * speed * Time.deltaTime;
+
         float rawXPos = transform.localPosition.x + xOffset;
+        float clampedXPos = Mathf.Clamp(rawXPos, -xRange, xRange);
 
-        float clampXPos = Mathf.Clamp(rawXPos, -xRange, xRange);
+        float rawYPos = transform.localPosition.y + yOffset;
+        float clampedYPos = Mathf.Clamp(rawYPos, -yRange, yRange);
 
-        transform.localPosition = new Vector3(clampXPos, transform.localPosition.y, transform.localPosition.z);
+        transform.localPosition = new Vector3(clampedXPos, clampedYPos, transform.localPosition.z);
     }
 }
